@@ -7,14 +7,10 @@ class RegexMessageParser (pattern: String) : MessageParser {
 		val groups = regex.matchEntire(message)?.groupValues
 		return groups?.subList(1, groups.size) ?: throw CouldNotMatchRegexPattern(message, regex.toString())
 	}
-
-	override fun isMatching(message: String): Boolean {
-		return regex.matchEntire(message) != null
-	}
 }
 
 class CouldNotMatchRegexPattern(messageToParse: String, regexPattern: String)
-	: Throwable(message = """Could not use the following regex to parse the message!
-		|Regex: $regexPattern
-		|Message: $messageToParse
+	: Throwable(message = """The regex doesn't match the message:
+		|	Regex: $regexPattern
+		|	Message: $messageToParse
 	""".trimMargin())

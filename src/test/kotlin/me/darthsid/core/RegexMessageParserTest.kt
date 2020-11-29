@@ -23,16 +23,6 @@ class RegexMessageParserTest {
 	}
 
 	@Test
-	fun givenAMatchingMessage_isMatching_returnsTrue() {
-		assertTrue { regexParser.isMatching(ccMessage) }
-	}
-
-	@Test
-	fun givenANonMatchingMessage_isMatching_returnsFalse() {
-		assertFalse { regexParser.isMatching("This message does not match the regex!") }
-	}
-
-	@Test
 	fun givenAMatchingMessage_parse_returnsTheExpectedComponents() {
 		val components = regexParser.parse(ccMessage)
 
