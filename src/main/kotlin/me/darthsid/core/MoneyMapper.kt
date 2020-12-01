@@ -1,11 +1,9 @@
 package me.darthsid.core
 
-import java.math.BigDecimal
-
-class MoneyMapper : ComponentMapper {
-	override fun mapComponent(component: String): BigDecimal {
+object MoneyMapper : ComponentMapper {
+	override fun mapComponent(component: String): Money {
 		try {
-			return BigDecimal(component)
+			return Money(component)
 		} catch (e: Exception) {
 			throw MoneyMapperException(component, e)
 		}
