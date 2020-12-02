@@ -10,5 +10,5 @@ data class Transaction (
 	var remainingBalance: Money? = null,
 	var counterparty: String? = null,
 	var dateOfTransaction: String? = null,
-	var timestamp: Date
+	var timestamp: Date = Date()
 )

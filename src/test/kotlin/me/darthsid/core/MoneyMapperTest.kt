@@ -1,6 +1,5 @@
 package me.darthsid.core
 
-import org.junit.Before
 import org.junit.Test
 import java.math.BigDecimal
 import kotlin.test.assertEquals

@@ -18,4 +18,19 @@ class MoneyTest {
 
 		assertEquals(BigDecimal("-180.25"), money.toBigDecimal())
 	}
+
+	@Test
+	fun given100Money_constructor_keeps2DecimalPlaces() {
+		val money = Money("100")
+
+		assertEquals("Money(value=100.00)", money.toString())
+	}
+
+	@Test
+	fun givenTwoMoneyInstancesWithSameAmount_equals_isTrue() {
+		val money1 = Money("200.34")
+		val money2 = Money("200.34")
+
+		assert(money1 == money2)
+	}
 }
