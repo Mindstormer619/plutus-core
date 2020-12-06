@@ -1,5 +1,8 @@
 package me.darthsid.core
 
+import io.mockk.MockKAnnotations
+import io.mockk.every
+import io.mockk.impl.annotations.MockK
 import org.junit.Before
 import org.junit.Test
 import java.math.BigDecimal
@@ -15,15 +18,15 @@ class TransactionGeneratorTest {
 	private val componentsOrder2 = listOf("SELLER", "180.25", "27-Nov-2020", "1234.56")
 	private val listWithOnlyAmount = listOf("180.25")
 
-	private val mockAccount = object: Account {
-		override val name: String
-			get() = "Mock Account"
-
-	}
+	@MockK
+	private lateinit var mockAccount: Account
 	private val currencyCode = "INR"
 
 	@Before
 	fun setUp() {
+		MockKAnnotations.init(this)
+		every { mockAccount.name } returns "Test Account Name"
+
 		val orderedIndices = ComponentIndices(0, 1, 2, 3)
 		transactionGenerator = TransactionGenerator(orderedIndices, currencyCode, mockAccount)
 		val outOfOrderIndices = ComponentIndices(1, 0, 2, 3)
