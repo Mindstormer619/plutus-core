@@ -6,17 +6,15 @@ import io.mockk.impl.annotations.MockK
 import org.junit.Before
 import org.junit.Test
 import java.math.BigDecimal
+import java.util.*
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
+import kotlin.test.assertNotNull
 
 class TransactionGeneratorTest {
 	private lateinit var transactionGenerator: TransactionGenerator
-	private lateinit var transactionGeneratorOrder2: TransactionGenerator
-	private lateinit var transactionGeneratorOnlyAmount: TransactionGenerator
 
 	private val components = listOf("180.25", "SELLER", "27-Nov-2020", "1234.56")
-	private val componentsOrder2 = listOf("SELLER", "180.25", "27-Nov-2020", "1234.56")
-	private val listWithOnlyAmount = listOf("180.25")
 
 	@MockK
 	private lateinit var mockAccount: Account
@@ -29,48 +27,52 @@ class TransactionGeneratorTest {
 
 		val orderedIndices = ComponentIndices(0, 1, 2, 3)
 		transactionGenerator = TransactionGenerator(orderedIndices, currencyCode, mockAccount)
-		val outOfOrderIndices = ComponentIndices(1, 0, 2, 3)
-		transactionGeneratorOrder2 = TransactionGenerator(outOfOrderIndices, currencyCode, mockAccount)
-		transactionGeneratorOnlyAmount = TransactionGenerator(ComponentIndices(0), currencyCode, mockAccount)
 	}
 
 	@Test
-	fun givenComponentList_createTransaction_createsATransactionWithValidAmount() {
+	fun `given a component list, createTransaction works with expected amount in the transaction`() {
 		val transaction = transactionGenerator.createTransaction(components)
 
 		assertEquals(BigDecimal("180.25"), transaction.amount.toBigDecimal())
 	}
 
 	@Test
-	fun givenComponentListInDifferentOrder_createTransaction_createsATransactionWithValidAmount() {
+	fun `different orderings of the components work when pre-specified in the transaction generator`() {
+		val componentsOrder2 = listOf("SELLER", "180.25", "27-Nov-2020", "1234.56")
+		val outOfOrderIndices = ComponentIndices(1, 0, 2, 3)
+		val transactionGeneratorOrder2 = TransactionGenerator(outOfOrderIndices, currencyCode, mockAccount)
+
 		val transaction = transactionGeneratorOrder2.createTransaction(componentsOrder2)
 
 		assertEquals(BigDecimal("180.25"), transaction.amount.toBigDecimal())
 	}
 
 	@Test
-	fun givenComponentList_createTransaction_createsATransactionWithValidCounterparty() {
+	fun `createTransaction inserts the counterparty correctly`() {
 		val transaction = transactionGenerator.createTransaction(components)
 
 		assertEquals("SELLER", transaction.counterparty)
 	}
 
 	@Test
-	fun givenComponentList_createTransaction_createsATransactionWithValidDateOfTransaction() {
+	fun `createTransaction inserts the date of transaction correctly`() {
 		val transaction = transactionGenerator.createTransaction(components)
 
 		assertEquals("27-Nov-2020", transaction.dateOfTransaction)
 	}
 
 	@Test
-	fun givenComponentList_createTransaction_createsATransactionWithValidRemainingBalance() {
+	fun `createTransaction inserts the remainingBalance amount correctly`() {
 		val transaction = transactionGenerator.createTransaction(components)
 
 		assertEquals(BigDecimal("1234.56"), transaction.remainingBalance?.toBigDecimal())
 	}
 
 	@Test
-	fun givenComponentListWithOnlyAmount_createTransaction_stillWorks() {
+	fun `createTransaction can skip all the non-essential arguments, except amount`() {
+		val listWithOnlyAmount = listOf("180.25")
+		val transactionGeneratorOnlyAmount = TransactionGenerator(ComponentIndices(0), currencyCode, mockAccount)
+
 		val transaction = transactionGeneratorOnlyAmount.createTransaction(listWithOnlyAmount)
 
 		assertEquals(BigDecimal("180.25"), transaction.amount.toBigDecimal())
@@ -78,7 +80,14 @@ class TransactionGeneratorTest {
 	}
 
 	@Test
-	fun givenInvalidCurrencyCode_constructor_fails() {
+	fun `constructor for TransactionGenerator fails when currency code is not a real currency`() {
 		assertFailsWith<InvalidCurrency> { TransactionGenerator(ComponentIndices(0), "DDD", mockAccount) }
+	}
+
+	@Test
+	fun `given predefined currency, check that primary constructor works`() {
+		val totallyWorkingCurrency = Currency.getInstance("USD")
+
+		assertNotNull(TransactionGenerator(ComponentIndices(0), totallyWorkingCurrency, mockAccount))
 	}
 }

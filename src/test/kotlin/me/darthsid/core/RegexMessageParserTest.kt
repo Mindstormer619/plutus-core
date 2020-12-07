@@ -23,14 +23,14 @@ class RegexMessageParserTest {
 	}
 
 	@Test
-	fun givenAMatchingMessage_parse_returnsTheExpectedComponents() {
+	fun `given a message matching the pattern, parse() returns the selected components`() {
 		val components = regexParser.parse(ccMessage)
 
 		assertEquals(expectedComponents, components)
 	}
 
 	@Test
-	fun givenANonMatchingMessage_parse_throwsAnException() {
+	fun `given a message that doesn't match the pattern, call to parse() fails`() {
 		val exception = assertFailsWith<CouldNotMatchRegexPattern> { regexParser.parse("Non matching message!") }
 		println("""Expected exception message:
 			|${exception.message}

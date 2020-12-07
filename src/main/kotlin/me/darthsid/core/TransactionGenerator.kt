@@ -1,17 +1,18 @@
 package me.darthsid.core
 
-import java.lang.IllegalArgumentException
 import java.util.*
-import kotlin.jvm.Throws
 
-class TransactionGenerator
-@Throws(InvalidCurrency::class) constructor(
+class TransactionGenerator constructor(
 	private val indices: ComponentIndices,
-	currencyCode: String,
+	private val currency: Currency,
 	private val account: Account
 ) {
-	private val currency: Currency = try { Currency.getInstance(currencyCode) }
-		catch (e: IllegalArgumentException) { throw InvalidCurrency(currencyCode, e) }
+	@Throws(InvalidCurrency::class) constructor(indices: ComponentIndices, currencyCode: String, account: Account)
+	: this(
+		indices,
+		try { Currency.getInstance(currencyCode) } catch (e: Exception) { throw InvalidCurrency(currencyCode, e) },
+		account
+	)
 
 	fun createTransaction(components: List<String>): Transaction {
 		return Transaction(
@@ -19,14 +20,14 @@ class TransactionGenerator
 			currency = currency,
 			account = account,
 			timestamp = Date(),
-			counterparty = getComponentOrNull(components, indices.counterpartyIndex),
-			dateOfTransaction = getComponentOrNull(components, indices.dateOfTransactionIndex),
-			remainingBalance = getComponentOrNull(components, indices.remainingBalanceIndex)?.let(MoneyMapper::mapComponent)
+			counterparty = components.getOrNull(indices.counterpartyIndex),
+			dateOfTransaction = components.getOrNull(indices.dateOfTransactionIndex),
+			remainingBalance = components.getOrNull(indices.remainingBalanceIndex)?.let(MoneyMapper::mapComponent)
 		)
 	}
 
-	private fun getComponentOrNull(components: List<String>, index: Int?) =
-		if (index != null) components[index] else null
+	private fun List<String>.getOrNull(index: Int?) =
+		if (index != null) this[index] else null
 
 }
 
