@@ -20,8 +20,8 @@ class TransactionGenerator constructor(
 			currency = currency,
 			account = account,
 			timestamp = Date(),
-			counterparty = components.getOrNull(indices.counterpartyIndex),
-			dateOfTransaction = components.getOrNull(indices.dateOfTransactionIndex),
+			counterparty = components.getOrNull(indices.counterpartyIndex) ?: "",
+			dateOfTransaction = components.getOrNull(indices.dateOfTransactionIndex) ?: "",
 			remainingBalance = components.getOrNull(indices.remainingBalanceIndex)?.let(MoneyMapper::mapComponent)
 		)
 	}

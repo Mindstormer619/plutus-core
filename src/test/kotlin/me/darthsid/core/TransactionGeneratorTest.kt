@@ -76,7 +76,9 @@ class TransactionGeneratorTest {
 		val transaction = transactionGeneratorOnlyAmount.createTransaction(listWithOnlyAmount)
 
 		assertEquals(BigDecimal("180.25"), transaction.amount.toBigDecimal())
-		assertEquals(null, transaction.counterparty)
+		assertEquals("", transaction.counterparty)
+		assertEquals("", transaction.dateOfTransaction)
+		assertEquals(null, transaction.remainingBalance)
 	}
 
 	@Test

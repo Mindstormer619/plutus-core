@@ -3,12 +3,14 @@ package me.darthsid.core
 import java.util.*
 
 data class Transaction (
-	var amount: Money,
-	var currency: Currency,
+	val amount: Money,
+	val currency: Currency,
 	val isCredit: Boolean = false,
-	var account: Account,
-	var remainingBalance: Money? = null,
-	var counterparty: String? = null,
-	var dateOfTransaction: String? = null,
-	var timestamp: Date = Date()
+	val account: Account,
+	val remainingBalance: Money? = null,
+	val counterparty: String = "",
+	val dateOfTransaction: String = "",
+	val timestamp: Date = Date(),
+	val comment: String = "",
+	val category: Category? = null
 )
