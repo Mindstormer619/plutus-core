@@ -5,16 +5,18 @@ import java.util.*
 class TransactionGenerator constructor(
 	private val indices: ComponentIndices,
 	private val currency: Currency,
-	private val account: Account
+	private val account: Account,
+	private val isCredit: Boolean = false
 ) {
-	@Throws(InvalidCurrency::class) constructor(indices: ComponentIndices, currencyCode: String, account: Account)
+	@Throws(InvalidCurrency::class) constructor(indices: ComponentIndices, currencyCode: String, account: Account, isCredit: Boolean = false)
 	: this(
 		indices,
 		try { Currency.getInstance(currencyCode) } catch (e: Exception) { throw InvalidCurrency(currencyCode, e) },
-		account
+		account,
+		isCredit
 	)
 
-	fun createTransaction(components: List<String>): Transaction {
+	fun createTransaction(components: List<String>, comment: String = "", category: Category? = null): Transaction {
 		return Transaction(
 			amount = MoneyMapper.mapComponent(components[indices.amountIndex]),
 			currency = currency,
@@ -22,7 +24,10 @@ class TransactionGenerator constructor(
 			timestamp = Date(),
 			counterparty = components.getOrNull(indices.counterpartyIndex) ?: "",
 			dateOfTransaction = components.getOrNull(indices.dateOfTransactionIndex) ?: "",
-			remainingBalance = components.getOrNull(indices.remainingBalanceIndex)?.let(MoneyMapper::mapComponent)
+			remainingBalance = components.getOrNull(indices.remainingBalanceIndex)?.let(MoneyMapper::mapComponent),
+			comment = comment,
+			isCredit = isCredit,
+			category = category
 		)
 	}
 

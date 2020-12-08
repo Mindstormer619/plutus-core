@@ -1,5 +1,5 @@
 package me.darthsid.core
 
-interface Account {
+class Account (
 	val name: String
-}
+)
