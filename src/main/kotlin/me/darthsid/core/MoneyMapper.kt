@@ -1,6 +1,6 @@
 package me.darthsid.core
 
-object MoneyMapper : ComponentMapper {
+object MoneyMapper : ComponentMapper<Money> {
 	override fun mapComponent(component: String): Money {
 		try {
 			return Money(component)

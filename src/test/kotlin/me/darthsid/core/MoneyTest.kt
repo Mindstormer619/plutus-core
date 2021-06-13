@@ -20,7 +20,7 @@ class MoneyTest {
 	}
 
 	@Test
-	fun `given initial amount as "100", Money object stores with 2 decimals`() {
+	fun `given initial amount as 100, Money object stores with 2 decimals`() {
 		val money = Money("100")
 
 		assertEquals("Money(value=100.00)", money.toString())

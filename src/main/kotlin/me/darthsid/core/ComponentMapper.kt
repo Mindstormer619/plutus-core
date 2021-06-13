@@ -1,5 +1,5 @@
 package me.darthsid.core
 
-interface ComponentMapper {
-	fun mapComponent(component: String) : Any
+interface ComponentMapper<out T> {
+	fun mapComponent(component: String) : T
 }
